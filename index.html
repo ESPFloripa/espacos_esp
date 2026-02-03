@@ -58,7 +58,9 @@
             { id: 3, nome: 'Consultório Simulado 1', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9770f593917d9cfe40c7d25f861c9063017cdc8bf759b15006def8792797e5c0%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
             { id: 4, nome: 'Consultório Simulado 2', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9e6f3e73e932704b0f0b0d9a1d421e363055af4bcc387317201b22ad65712887%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
             { id: 13, nome: 'Sala de Gravação', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a gravações e produções audiovisuais.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'monitor', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: null },
-            { id: 11, nome: 'Refeitório', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a apoio à Recepções de eventos, Coffee Breaks e Refeições.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'coffee', disponivel: true, statusManutencao: false, detalhes: ['2 Mesas Grandes', '1 Bancada', 'Armários', 'Cafeteira', '1 frigobar', 'Filtro de Água', 'Bebedouro', 'Ar condicionado'], reservaNaoNecessaria: true }
+            { id: 14, nome: 'Biblioteca', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a estudo, leitura e consulta de acervo técnico na área da saúde.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'book-open', disponivel: true, statusManutencao: false, detalhes: ['16 Cadeiras empilháveis', '1 bancada', '3 mesas redondas', '2 prateleiras', 'Livros da área da saúde', 'Ar condicionado'], reservaNaoNecessaria: true },
+            { id: 11, nome: 'Refeitório', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a apoio à Recepções de eventos, Coffee Breaks e Refeições.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'coffee', disponivel: true, statusManutencao: false, detalhes: ['2 Mesas Grandes', '1 Bancada', 'Armários', 'Cafeteira', '1 frigobar', 'Filtro de Água', 'Bebedouro', 'Ar condicionado'], reservaNaoNecessaria: true },
+            { id: 15, nome: 'Hall', tema: 'azul', capacidade: 'Área Comum', descricao: 'Espaço adjacente ao auditório e refeitório que pode ser utilizado para recepções e Coffee Break em grandes eventos', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, statusManutencao: false, detalhes: ['Banner ESP', '2 tapetes', 'Lixeiras'], reservaNaoNecessaria: true }
         ],
         get filteredEspacos() {
             const term = this.searchTerm.toLowerCase();
@@ -231,7 +233,7 @@
                     </button>
                 </div>
 
-                <!-- Conteúdo (Iframe ou Instruções) -->
+                <!-- Conteúdo -->
                 <div class="flex-1 bg-slate-100 relative overflow-y-auto">
                     <div x-show="showInstructions" class="absolute inset-0 z-20 bg-white p-8 md:p-12 overflow-y-auto">
                         <div class="max-w-2xl mx-auto">
@@ -298,7 +300,7 @@
                     <div class="space-y-4 text-sm md:text-base">
                         <div class="flex gap-4">
                             <div class="w-2 h-2 rounded-full bg-emerald-500 mt-2.5 shrink-0"></div>
-                            <p><b class="text-slate-900">Área de acesso livre (gratuita) -</b> Destinada ao público em geral; Comporta até 100 vagas; Sujeita à disponibilidade de espaço. <a href="https://www.pmf.sc.gov.br/arquivos/arquivos/pdf/29_08_2025_11.01.49.335458e8b324714fa3050decbf5cbd41.pdf" target="_blank" class="text-blue-600 font-bold hover:underline">Veja o mapa de orientação clicando aqui.</a></p>
+                            <p><b class="text-slate-900">Area de acesso livre (gratuita) -</b> Destinada ao público em geral; Comporta até 100 vagas; Sujeita à disponibilidade de espaço. <a href="https://www.pmf.sc.gov.br/arquivos/arquivos/pdf/29_08_2025_11.01.49.335458e8b324714fa3050decbf5cbd41.pdf" target="_blank" class="text-blue-600 font-bold hover:underline">Veja o mapa de orientação clicando aqui.</a></p>
                         </div>
                         <div class="flex gap-4">
                             <div class="w-2 h-2 rounded-full bg-amber-500 mt-2.5 shrink-0"></div>
