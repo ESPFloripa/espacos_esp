@@ -60,7 +60,7 @@
             { id: 4, nome: 'Consultório Simulado 2', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9e6f3e73e932704b0f0b0d9a1d421e363055af4bcc387317201b22ad65712887%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
             { id: 13, nome: 'Sala de Gravação', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a gravações e produções audiovisuais.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'monitor', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: null },
             { id: 14, nome: 'Biblioteca', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a estudo, leitura e consulta de acervo técnico na área da saúde.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'book-open', disponivel: true, statusManutencao: false, detalhes: ['16 Cadeiras empilháveis', '1 bancada', '3 mesas redondas', '2 prateleiras', 'Livros da área da saúde', 'Ar condicionado'], reservaNaoNecessaria: true },
-            { id: 11, nome: 'Refeitório', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a apoio à Recepções de eventos, Coffee Breaks e Refeições.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'coffee', disponivel: true, statusManutencao: false, detalhes: ['2 Mesas Grandes', '1 Bancada', 'Armários', 'Cafeteira', '1 frigobar', 'Filtro de Água', 'Bebedouro', 'Ar condicionado'], reservaNaoNecessaria: true },
+            { id: 11, nome: 'Refeitório', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a apoio à Recepções de eventos, Coffee Breaks e Refeições.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'coffee', disponivel: true, statusManutencao: false, detalhes: ['2 Mesas Grandes', '1 Bancada', 'Armários', 'Cafeteira', 'Microondas', '1 frigobar', 'Filtro de Água', 'Bebedouro', 'Ar condicionado'], reservaNaoNecessaria: true },
             { id: 15, nome: 'Hall', tema: 'azul', capacidade: 'Área Comum', descricao: 'Espaço adjacente ao auditório e refeitório que pode ser utilizado para recepções e Coffee Break em grandes eventos', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, statusManutencao: false, detalhes: ['Banner ESP', '2 tapetes', 'Lixeiras'], reservaNaoNecessaria: true }
         ],
         get filteredEspacos() {
@@ -234,7 +234,7 @@
                     </button>
                 </div>
 
-                <!-- Conteúdo -->
+                <!-- Conteúdo (Iframe ou Instruções) -->
                 <div class="flex-1 bg-slate-100 relative overflow-y-auto">
                     <div x-show="showInstructions" class="absolute inset-0 z-20 bg-white p-8 md:p-12 overflow-y-auto">
                         <div class="max-w-2xl mx-auto">
@@ -243,7 +243,7 @@
                                 <h4 class="text-2xl font-black">Como reservar?</h4>
                             </div>
                             <div class="space-y-6 text-slate-700 leading-relaxed font-medium">
-                                <p>Interessados em reservar alguma das salas ou equipamentos deverão enviar e-mail para <b class="text-slate-900">espfloripa@gmail.com</b> fazendo a solicitação com as informações abaixo:</p>
+                                <p>Interessados em reservar alguma das salas ou equipamentos deverão enviar e-mail para <b class="text-slate-900">espfloripa@gmail.com</b> fazendo a solicitaçâo com as informações abaixo:</p>
                                 <ul class="space-y-2 pl-4 border-l-4 border-blue-100 font-bold text-slate-800">
                                     <li>• Sala que quer agendar</li>
                                     <li>• Dia</li>
