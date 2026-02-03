@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Espaços ESP - Florianópolis</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(30, 64, 175, 0.85), rgba(30, 64, 175, 0.85)), url('https://i.imgur.com/P9NOEC0.png');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .modal-blur { backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 pb-20">
+
+    <!-- Lógica Principal do Alpine.js -->
+    <div x-data="{ 
+        searchTerm: '', 
+        filterType: 'todos',
+        selectedSpace: null,
+        showInstructions: false,
+        showParkingInfo: false,
+        icons: {
+            'users': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/></svg>`,
+            'book-open': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>`,
+            'monitor': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='20' height='14' x='2' y='3' rx='2'/><line x1='8' x2='16' y1='21' y2='21'/></svg>`,
+            'stethoscope': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1'/><path d='M8 15v1a6 6 0 0 0 6 6h2a6 6 0 0 0 6-6v-4'/><circle cx='20' cy='10' r='2'/></svg>`,
+            'coffee': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 8h1a4 4 0 1 1 0 8h-1'/><path d='M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z'/></svg>`,
+            'search': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>`,
+            'map-pin': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/><circle cx='12' cy='10' r='3'/></svg>`,
+            'mail': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='20' height='16' x='2' y='4' rx='2'/><path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/></svg>`,
+            'x': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 6 6 18'/><path d='m6 6 12 12'/></svg>`,
+            'info': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' x2='12' y1='16' y2='12'/><line x1='12' x2='12.01' y1='8' y2='8'/></svg>`,
+            'calendar': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='18' height='18' x='3' y='4' rx='2' ry='2'/><line x1='16' x2='16' y1='2' y2='6'/><line x1='8' x2='8' y1='2' y2='6'/><line x1='3' x2='21' y1='10' y2='10'/></svg>`,
+            'chevron-left': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m15 18-6-6 6-6'/></svg>`
+        },
+        espacos: [
+            { id: 2, nome: 'Sala de Reuniões/Biblioteca', tema: 'verde', capacidade: 'Até 15 pessoas', descricao: 'Sala multifuncional que pode servir para reuniões e aulas.', local: 'Secretaria Municipal de Saúde anexo sala da ESP', plusCode: 'CF6J+6Q Trindade, Florianópolis - SC', icone: 'book-open', disponivel: true, detalhes: ['10 Cadeiras', '2 Mesas', 'TV', 'Datashow', 'Parede transformada em lousa', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=5f44da77118fa59b495b7ad4dcfe5b9de1ed06c21c24a051480b246f1852c431%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 12, nome: 'Equipamentos didáticos', tema: 'verde', capacidade: 'Recursos Móveis', descricao: 'Equipamentos disponíveis mediante agendamento prévio.', local: 'Secretaria Municipal de Saúde na sala da ESP', plusCode: 'CF6J+6Q Trindade, Florianópolis - SC', icone: 'monitor', disponivel: true, detalhes: ['3 Datashows', '2 Notebooks'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=2e2394ffe791fd9ec5c366c1eba0d649b7eebcc67a0c89836d32238aa454f441%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 1, nome: 'Auditório', tema: 'azul', capacidade: 'Até 230 pessoas', descricao: 'Espaço para eventos, aulas e palestras', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['230 Cadeiras Empilháveis', '2 Bancadas', 'Sala de Apoio', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=949fb0e4881e9b2838d765bb059e8be9ef0739681b58916cdab53131978ab88d%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 5, nome: 'Sala de Aula 1', tema: 'azul', capacidade: 'Até 50 pessoas', descricao: 'Espaço para eventos, aulas e palestras', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Gaveteiro', 'Mesas Professor', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=10cbbf56f4710a2d4ff11d0a75810a42bee54d548c1262dc04c5c7cc5fa7bc4e%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 6, nome: 'Sala de Aula 2', tema: 'azul', capacidade: 'Até 50 pessoas', descricao: 'Espaço para eventos, aulas e palestras', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['50 Cadeiras Empilháveis', '2 Mesas Professor', 'Gaveteiro', '4 Mesas Móveis', 'Lousa Branca', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=b1b538b3c63a508290c04ace3488b8063a01a0ff9e233a26a690a50ccfaad6c2%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 7, nome: 'Sala de Aula 3', tema: 'azul', capacidade: 'Até 50 pessoas', descricao: 'Espaço para eventos, aulas e palestras', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Mesa Professor', '5 Mesas Móveis', 'Gaveteiro', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=ad6f8235ec45689c83173c6d578099f996d7b7042181678c456394e68214dbb9%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 8, nome: 'Sala de Aula 4', tema: 'azul', capacidade: 'Até 45 pessoas', descricao: 'Espaço para eventos, aulas e palestras', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['45 Cadeiras c/ braço', 'Gaveteiro', 'Mesas Professor', 'Lousa Branca', 'Ar condicionado', '2 cadeiras empilháveis'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9ee08951693683ddc1805aef0a8ca67bf74fa69d900cff4f618c7e3be143c365%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 9, nome: 'Sala de Estudos', tema: 'azul', capacidade: 'Até 11 pessoas', descricao: 'Espaço para aulas, estudo e reuniões.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'book-open', disponivel: true, detalhes: ['11 cadeiras', 'TV', 'Mesas Redondas', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=758d6338a5c7c135a931940b0e5c408a8a8a338cc6adb4e5b5ca607a6dde933b%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 10, nome: 'Sala de Reuniões', tema: 'azul', capacidade: 'Até 10 pessoas', descricao: 'Espaço para reuniões.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['Mesa Reunião', 'TV', 'Ar condicionado', '10 cadeiras empilháveis'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=828b86684687a30e86bb0a6c52a3e50767084e8a672b331c42aa7a21f1ff4557%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 3, nome: 'Consultório Simulado 1', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9770f593917d9cfe40c7d25f861c9063017cdc8bf759b15006def8792797e5c0%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 4, nome: 'Consultório Simulado 2', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9e6f3e73e932704b0f0b0d9a1d421e363055af4bcc387317201b22ad65712887%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { id: 13, nome: 'Sala de Gravação', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a gravações e produções audiovisuais.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'monitor', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: null },
+            { id: 11, nome: 'Refeitório', tema: 'azul', capacidade: 'Área Comum', descricao: 'Ambiente destinado a apoio à Recepções de eventos, Coffee Breaks e Refeições.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'coffee', disponivel: true, statusManutencao: false, detalhes: ['2 Mesas Grandes', '1 Bancada', 'Armários', 'Cafeteira', '1 frigobar', 'Filtro de Água', 'Bebedouro', 'Ar condicionado'], reservaNaoNecessaria: true }
+        ],
+        get filteredEspacos() {
+            const term = this.searchTerm.toLowerCase();
+            return this.espacos.filter(s => {
+                const searchMatch = s.nome.toLowerCase().includes(term) || 
+                                   s.descricao.toLowerCase().includes(term) || 
+                                   (s.detalhes && s.detalhes.some(d => d.toLowerCase().includes(term)));
+                
+                let filterMatch = false;
+                if (this.filterType === 'todos') filterMatch = true;
+                else if (this.filterType === 'sms') filterMatch = s.local.includes('Secretaria Municipal de Saúde');
+                else if (this.filterType === 'multi') filterMatch = s.local === 'Espaço Multi';
+                
+                return searchMatch && filterMatch;
+            });
+        }
+    }" x-cloak>
+
+        <!-- Header -->
+        <header class="bg-white border-b sticky top-0 z-40 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                            <span class="w-7 h-7 block" x-html="icons['stethoscope']"></span>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-slate-800 leading-tight">Escola de Saúde Pública</h1>
+                            <p class="text-sm text-slate-500 font-medium tracking-tight">Florianópolis / SMS</p>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex items-center gap-6 text-sm font-bold text-slate-600">
+                        <a href="mailto:espfloripa@gmail.com" class="flex items-center gap-2 hover:text-blue-600 transition-colors bg-blue-50 px-4 py-2 rounded-full border border-blue-100 text-blue-700">
+                            <span class="w-4 h-4 block" x-html="icons['mail']"></span> espfloripa@gmail.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero-bg text-white py-16 mb-8 shadow-inner relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="max-w-3xl">
+                    <h2 class="text-4xl font-extrabold mb-4 tracking-tight drop-shadow-md">Espaços Compartilhados ESP</h2>
+                    <p class="text-white text-lg leading-relaxed font-medium drop-shadow-md">
+                        Consulte a agenda oficial em tempo real e verifique a infraestrutura disponível para as atividades da SMS Florianópolis.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Pesquisa e Filtros -->
+            <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="relative flex-1 group">
+                    <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                        <span class="w-5 h-5 block" x-html="icons['search']"></span>
+                    </div>
+                    <input 
+                        type="text" 
+                        placeholder="Pesquisar por nome, recurso ou local..." 
+                        class="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm font-medium"
+                        x-model="searchTerm"
+                    >
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <button @click="filterType = 'todos'" class="px-6 py-4 rounded-2xl font-bold transition-all border" :class="filterType === 'todos' ? 'bg-slate-900 text-white border-slate-900 shadow-xl' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'">Todos</button>
+                    <button @click="filterType = 'sms'" class="px-6 py-4 rounded-2xl font-bold transition-all border" :class="filterType === 'sms' ? 'bg-slate-900 text-white border-slate-900 shadow-xl' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'">SMS</button>
+                    <button @click="filterType = 'multi'" class="px-6 py-4 rounded-2xl font-bold transition-all border" :class="filterType === 'multi' ? 'bg-slate-900 text-white border-slate-900 shadow-xl' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'">Espaço Multi</button>
+                </div>
+            </div>
+
+            <!-- Grid de Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="space in filteredEspacos" :key="space.id">
+                    <div class="group relative bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col" :class="space.statusManutencao ? 'bg-slate-50/50' : ''">
+                        
+                        <!-- Badge de Status -->
+                        <div class="absolute top-5 right-5 z-10">
+                            <div class="text-[10px] uppercase font-black px-3 py-1 rounded-full border shadow-sm" :class="space.statusManutencao ? 'bg-rose-50 text-rose-700 border-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'">
+                                <span x-text="space.statusManutencao ? 'Indisponível' : 'Disponível'"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-8 flex-1">
+                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-300" :class="!space.statusManutencao ? (space.tema === 'verde' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600') : 'bg-slate-200 text-slate-400'">
+                                <span class="w-8 h-8 block" x-html="icons[space.icone]"></span>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-slate-800 mb-2 leading-tight min-h-[3.5rem] flex items-center" x-text="space.nome"></h3>
+
+                            <div class="mb-6">
+                                <!-- Container Flex para Local e Tag de Estacionamento Lado a Lado -->
+                                <div class="flex items-center flex-wrap gap-2">
+                                    <template x-if="space.plusCode">
+                                        <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(space.plusCode)" target="_blank" class="group/loc inline-flex items-center gap-2 text-slate-500 text-sm font-semibold leading-tight hover:text-blue-600 transition-colors">
+                                            <span class="w-4 h-4 shrink-0" :class="space.tema === 'verde' ? 'text-green-500' : 'text-blue-400'" x-html="icons['map-pin']"></span>
+                                            <span x-text="space.local"></span>
+                                        </a>
+                                    </template>
+                                    <template x-if="!space.plusCode">
+                                        <div class="inline-flex items-center gap-2 text-slate-500 text-sm font-semibold leading-tight">
+                                            <span class="w-4 h-4 shrink-0" :class="space.tema === 'verde' ? 'text-green-500' : 'text-blue-400'" x-html="icons['map-pin']"></span>
+                                            <span x-text="space.local"></span>
+                                        </div>
+                                    </template>
+
+                                    <!-- Tag Estacionamento (Compactada e Corrigida) -->
+                                    <template x-if="space.local === 'Espaço Multi'">
+                                        <button @click="showParkingInfo = true" class="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-tight text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors whitespace-nowrap overflow-hidden">
+                                            <span class="w-2.5 h-2.5 shrink-0 block flex items-center justify-center" x-html="icons['info']"></span>
+                                            <span>Estacionamento</span>
+                                        </button>
+                                    </template>
+                                </div>
+
+                                <div class="flex items-center gap-2 text-slate-500 text-sm font-semibold pt-2">
+                                    <span class="w-4 h-4 shrink-0" :class="space.tema === 'verde' ? 'text-green-500' : 'text-blue-400'" x-html="icons['users']"></span>
+                                    <span x-text="space.capacidade"></span>
+                                </div>
+                            </div>
+
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-3 min-h-[4.5rem]" x-text="space.descricao"></p>
+
+                            <template x-if="space.detalhes && space.detalhes.length">
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="det in space.detalhes" :key="det">
+                                        <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded transition-colors" :class="space.tema === 'verde' ? 'group-hover:bg-green-50 group-hover:text-green-500' : 'group-hover:bg-blue-50 group-hover:text-blue-500'" x-text="det"></span>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="p-5 pt-0">
+                            <template x-if="space.reservaNaoNecessaria">
+                                <div class="w-full text-center py-4 bg-slate-100 rounded-2xl text-slate-400 text-xs font-black uppercase tracking-widest border border-dashed border-slate-300">Uso Livre</div>
+                            </template>
+                            <template x-if="!space.reservaNaoNecessaria && !space.statusManutencao">
+                                <button @click="selectedSpace = space; showInstructions = false" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600' : 'bg-slate-900 hover:bg-blue-600'">
+                                    <span class="w-4.5 h-4.5 block" x-html="icons['calendar']"></span> Ver Agenda Integrada
+                                </button>
+                            </template>
+                            <template x-if="space.statusManutencao">
+                                <div class="w-full text-center py-4 text-slate-300 font-bold text-sm bg-slate-100 rounded-2xl">Indisponível para reserva</div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+
+        <!-- Modal Agenda e Instruções -->
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-slate-900/80 modal-blur" x-show="selectedSpace" x-transition x-cloak>
+            <div class="bg-white rounded-none md:rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col h-full md:h-[85vh]" @click.away="selectedSpace = null">
+                
+                <!-- Cabeçalho do Modal -->
+                <div class="p-4 text-white flex justify-between items-center shrink-0" :class="selectedSpace?.tema === 'verde' ? 'bg-green-700' : 'bg-blue-600'">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-white/20 rounded-lg">
+                            <span class="w-5 h-5 block" x-html="icons[showInstructions ? 'info' : 'calendar']"></span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg leading-tight" x-text="selectedSpace?.nome"></h3>
+                            <p class="text-white/80 text-xs uppercase tracking-wider font-semibold" x-text="showInstructions ? 'Instruções de Agendamento' : 'Calendário Oficial em Tempo Real'"></p>
+                        </div>
+                    </div>
+                    <button @click="selectedSpace = null" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                        <span class="w-6 h-6 block" x-html="icons['x']"></span>
+                    </button>
+                </div>
+
+                <!-- Conteúdo (Iframe ou Instruções) -->
+                <div class="flex-1 bg-slate-100 relative overflow-y-auto">
+                    <div x-show="showInstructions" class="absolute inset-0 z-20 bg-white p-8 md:p-12 overflow-y-auto">
+                        <div class="max-w-2xl mx-auto">
+                            <div class="mb-8 flex items-center gap-4 text-blue-600">
+                                <span class="w-10 h-10 block" x-html="icons['info']"></span>
+                                <h4 class="text-2xl font-black">Como reservar?</h4>
+                            </div>
+                            <div class="space-y-6 text-slate-700 leading-relaxed font-medium">
+                                <p>Interessados em reservar alguma das salas ou equipamentos deverão enviar e-mail para <b class="text-slate-900">espfloripa@gmail.com</b> fazendo a solicitação com as informações abaixo:</p>
+                                <ul class="space-y-2 pl-4 border-l-4 border-blue-100 font-bold text-slate-800">
+                                    <li>• Sala que quer agendar</li>
+                                    <li>• Dia</li>
+                                    <li>• Horário (início e fim)</li>
+                                    <li>• Responsável com contato (email e telefone)</li>
+                                </ul>
+                                <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100 text-blue-800 text-sm">
+                                    No caso de equipamentos especificar o(s) equipamentos, data e horário de uso (início e fim).
+                                </div>
+                                <p>A ESP receberá as solicitações, procederá ao agendamento e enviará a confirmação logo que possível. Em caso de urgência ligar no telefone <b class="text-slate-900">3239-1593</b> ou procurar diretamente a ESP.</p>
+                                <div class="pt-6 border-t border-slate-100 text-xs md:text-sm text-slate-500 italic">
+                                    Para as salas localizadas no espaço da ESP no Multihospital o responsável deverá retirar a chave da sala (e os equipamentos se necessários) na sala da ESP na SMS.
+                                </div>
+                            </div>
+                            <button @click="showInstructions = false" class="mt-10 flex items-center gap-2 text-blue-600 font-bold hover:underline transition-all">
+                                <span class="w-5 h-5 block" x-html="icons['chevron-left']"></span> Voltar para o calendário
+                            </button>
+                        </div>
+                    </div>
+                    <template x-if="selectedSpace && selectedSpace.agendaUrl">
+                        <iframe :src="selectedSpace.agendaUrl" class="w-full h-full border-none" title="Agenda"></iframe>
+                    </template>
+                </div>
+
+                <!-- Rodapé do Modal -->
+                <div class="p-4 bg-slate-50 border-t flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 text-slate-600 text-sm text-center md:text-left">
+                        <span class="w-4.5 h-4.5 text-blue-500 shrink-0 block" x-html="icons['info']"></span>
+                        <span class="font-medium">Para realizar reserva siga as instruções disponibilizadas no botão ao lado.</span>
+                    </div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button @click="showInstructions = true" class="flex-1 md:flex-none flex items-center justify-center gap-2 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md active:scale-95" :class="selectedSpace?.tema === 'verde' ? 'bg-green-700 hover:bg-green-600' : 'bg-blue-600 hover:bg-blue-700'">
+                            <span class="w-4 h-4 block" x-html="icons['info']"></span> Reservar
+                        </button>
+                        <button @click="selectedSpace = null" class="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Estacionamento -->
+        <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/90 modal-blur" x-show="showParkingInfo" x-transition x-cloak>
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col" @click.away="showParkingInfo = false">
+                <div class="p-6 bg-amber-600 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 block" x-html="icons['info']"></span>
+                        <h3 class="font-bold text-xl uppercase tracking-tight">Estacionamento</h3>
+                    </div>
+                    <button @click="showParkingInfo = false" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                        <span class="w-6 h-6 block" x-html="icons['x']"></span>
+                    </button>
+                </div>
+                <div class="p-8 md:p-10 space-y-6 text-slate-700 leading-relaxed font-medium">
+                    <p class="text-slate-900 font-bold">O estacionamento é dividido em duas áreas:</p>
+                    <div class="space-y-4 text-sm md:text-base">
+                        <div class="flex gap-4">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500 mt-2.5 shrink-0"></div>
+                            <p><b class="text-slate-900">Área de acesso livre (gratuita) -</b> Destinada ao público em geral; Comporta até 100 vagas; Sujeita à disponibilidade de espaço. <a href="https://www.pmf.sc.gov.br/arquivos/arquivos/pdf/29_08_2025_11.01.49.335458e8b324714fa3050decbf5cbd41.pdf" target="_blank" class="text-blue-600 font-bold hover:underline">Veja o mapa de orientação clicando aqui.</a></p>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-2 h-2 rounded-full bg-amber-500 mt-2.5 shrink-0"></div>
+                            <p><b class="text-slate-900">Área de acesso pago -</b> Espaço com controle de acesso e cobrança conforme tabela vigente; Destinada aos demais usuários e mensalistas cadastrados.</p>
+                        </div>
+                    </div>
+                    <p class="pt-6 border-t border-slate-100 text-xs md:text-sm text-slate-500 italic">
+                        Além dessas áreas, há opções de estacionamento nas vias públicas do entorno, observando sempre as sinalizações e regras de trânsito.
+                    </p>
+                    <button @click="showParkingInfo = false" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-colors shadow-lg">Entendido</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-20 py-16 bg-white border-t text-slate-500">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <div class="w-16 h-1 bg-blue-600 mx-auto mb-8 rounded-full"></div>
+                <p class="font-extrabold text-slate-900 text-lg mb-2">Escola de Saúde Pública de Florianópolis</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 text-sm font-bold text-slate-400">
+                    <span class="flex items-center gap-2" x-html="icons['mail'] + ' espfloripa@gmail.com'"></span>
+                    <span class="flex items-center gap-2" x-html="icons['clock'] + ' Segunda a Sexta: 08:00 - 19:00'"></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
