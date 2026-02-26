@@ -13,6 +13,7 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Estilo para o fundo do cabeçalho hero com imagem */
         .hero-bg {
             background-image: linear-gradient(rgba(30, 64, 175, 0.85), rgba(30, 64, 175, 0.85)), url('https://i.imgur.com/P9NOEC0.png');
             background-size: cover;
@@ -22,7 +23,7 @@
         .modal-blur { backdrop-filter: blur(8px); }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900 pb-20">
+<body class="bg-slate-200 font-sans text-slate-900 pb-20">
 
     <!-- Lógica Principal do Alpine.js -->
     <div x-data="{ 
@@ -44,18 +45,136 @@
             'x': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 6 6 18'/><path d='m6 6 12 12'/></svg>`,
             'info': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' x2='12' y1='16' y2='12'/><line x1='12' x2='12.01' y1='8' y2='8'/></svg>`,
             'calendar': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='18' height='18' x='3' y='4' rx='2' ry='2'/><line x1='16' x2='16' y1='2' y2='6'/><line x1='8' x2='8' y1='2' y2='6'/><line x1='3' x2='21' y1='10' y2='10'/></svg>`,
-            'chevron-left': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m15 18-6-6 6-6'/></svg>`
+            'chevron-left': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m15 18-6-6 6-6'/></svg>`,
+            'external-link': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/><polyline points='15 3 21 3 21 9'/><line x1='10' y1='14' x2='21' y2='3'/></svg>`
         },
         espacos: [
-            { id: 2, nome: 'Sala de Reuniões/Biblioteca', tema: 'verde', capacidade: 'Até 15 pessoas', descricao: 'Sala multifuncional que pode servir para reuniões e aulas.', local: 'Secretaria Municipal de Saúde anexo sala da ESP', plusCode: 'CF6J+6Q Trindade, Florianópolis - SC', icone: 'book-open', disponivel: true, detalhes: ['10 Cadeiras', '2 Mesas', 'TV', 'Datashow', 'Parede transformada em lousa', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=5f44da77118fa59b495b7ad4dcfe5b9de1ed06c21c24a051480b246f1852c431%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 12, nome: 'Equipamentos didáticos', tema: 'verde', capacidade: 'Recursos Móveis', descricao: 'Equipamentos disponíveis mediante agendamento prévio.', local: 'Secretaria Municipal de Saúde na sala da ESP', plusCode: 'CF6J+6Q Trindade, Florianópolis - SC', icone: 'monitor', disponivel: true, detalhes: ['3 Datashows', '2 Notebooks'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=2e2394ffe791fd9ec5c366c1eba0d649b7eebcc67a0c89836d32238aa454f441%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 1, nome: 'Auditório', tema: 'azul', capacidade: 'Até 230 pessoas', descricao: 'Espaço para eventos, aulas e palestras.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['230 Cadeiras Empilháveis', '2 Bancadas', 'Sala de Apoio', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=949fb0e4881e9b2838d765bb059e8be9ef0739681b58916cdab53131978ab88d%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 5, nome: 'Sala de Aula 1', tema: 'azul', capacidade: 'Até 50 pessoas', descricao: 'Espaço para eventos, aulas e palestras.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Gaveteiro', 'Mesas Professor', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=10cbbf56f4710a2d4ff11d0a75810a42bee54d548c1262dc04c5c7cc5fa7bc4e%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 6, nome: 'Sala de Aula 2', tema: 'azul', capacidade: 'Até 50 pessoas', descricao: 'Espaço para eventos, aulas e palestras.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['50 Cadeiras Empilháveis', '2 Mesas Professor', 'Gaveteiro', '4 Mesas Móveis', 'Lousa Branca', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=b1b538b3c63a508290c04ace3488b8063a01a0ff9e233a26a690a50ccfaad6c2%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 7, nome: 'Sala de Aula 3', tema: 'azul', capacidade: 'Até 50 pessoas', descricao: 'Espaço para eventos, aulas e palestras.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Mesa Professor', '5 Mesas Móveis', 'Gaveteiro', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=ad6f8235ec45689c83173c6d578099f996d7b7042181678c456394e68214dbb9%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 8, nome: 'Sala de Aula 4', tema: 'azul', capacidade: 'Até 45 pessoas', descricao: 'Espaço para eventos, aulas e palestras.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['45 Cadeiras c/ braço', 'Gaveteiro', 'Mesa Professor', 'Lousa Branca', 'Ar condicionado', '2 cadeiras empilháveis'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9ee08951693683ddc1805aef0a8ca67bf74fa69d900cff4f618c7e3be143c365%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 9, nome: 'Sala de Estudos', tema: 'azul', capacidade: 'Até 11 pessoas', descricao: 'Espaço para aulas, estudo e reuniões.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'book-open', disponivel: true, detalhes: ['11 cadeiras', 'TV', 'Armário baixo', 'Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=758d6338a5c7c135a931940b0e5c408a8a8a338cc6adb4e5b5ca607a6dde933b%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
-            { id: 10, nome: 'Sala de Reuniões', tema: 'azul', capacidade: 'Até 10 pessoas', descricao: 'Espaço para reuniões.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'users', disponivel: true, detalhes: ['Mesa Reunião', 'TV', 'Ar condicionado', '10 cadeiras empilháveis'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=828b86684687a30e86bb0a6c52a3e50767084e8a672b331c42aa7a21f1ff4557%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
+            { 
+                id: 2, 
+                nome: 'Sala de Reuniões/Biblioteca', 
+                tema: 'verde', 
+                capacidade: 'Até 15 pessoas', 
+                descricao: 'Sala multifuncional que pode servir para reuniões e aulas.', 
+                local: 'Secretaria Municipal de Saúde anexo sala da ESP', 
+                plusCode: 'CF6J+6Q Trindade, Florianópolis - SC',
+                icone: 'book-open', 
+                disponivel: true, 
+                detalhes: ['10 Cadeiras', '2 Mesas', 'TV', 'Datashow', 'Parede transformada em lousa', 'Ar condicionado'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=5f44da77118fa59b495b7ad4dcfe5b9de1ed06c21c24a051480b246f1852c431%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeBqQCWYE_jBm0jJFIoyL4xM2QfsPhQoguYo3xV_G5DBdwp-g/viewform?usp=header'
+            },
+            { 
+                id: 12, 
+                nome: 'Equipamentos didáticos', 
+                tema: 'verde', 
+                capacidade: 'Recursos Móveis', 
+                descricao: 'Equipamentos disponíveis mediante agendamento prévio.', 
+                local: 'Secretaria Municipal de Saúde na sala da ESP', 
+                plusCode: 'CF6J+6Q Trindade, Florianópolis - SC',
+                icone: 'monitor', 
+                disponivel: true, 
+                detalhes: ['3 Datashows', '2 Notebooks'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=2e2394ffe791fd9ec5c366c1eba0d649b7eebcc67a0c89836d32238aa454f441%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd6yq5Kty2IFdu0Hd-QSNcRYGUp6qAiRlrjaTZFVfbfvzrnnQ/viewform?usp=header'
+            },
+            { 
+                id: 1, 
+                nome: 'Auditório', 
+                tema: 'azul', 
+                capacidade: 'Até 230 pessoas', 
+                descricao: 'Espaço para eventos, aulas e palestras.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'users', 
+                disponivel: true, 
+                detalhes: ['230 Cadeiras Empilháveis', '2 Bancadas', 'Sala de Apoio', 'Ar condicionado'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=949fb0e4881e9b2838d765bb059e8be9ef0739681b58916cdab53131978ab88d%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfqM02DkDVa3KmPwNwbEZ2i7Mhc2_SCw8Db8lMC9y5sxlUE4w/viewform?usp=dialog'
+            },
+            { 
+                id: 5, 
+                nome: 'Sala de Aula 1', 
+                tema: 'azul', 
+                capacidade: 'Até 50 pessoas', 
+                descricao: 'Espaço para eventos, aulas e palestras.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'users', 
+                disponivel: true, 
+                detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Gaveteiro', 'Mesas Professor', 'Ar condicionado'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=10cbbf56f4710a2d4ff11d0a75810a42bee54d548c1262dc04c5c7cc5fa7bc4e%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdTUyO2JbiHtObTtkMs7ZKkwUGnJiB0tnDRclbv6bVGEzGoRg/viewform?usp=dialog'
+            },
+            { 
+                id: 6, 
+                nome: 'Sala de Aula 2', 
+                tema: 'azul', 
+                capacidade: 'Até 50 pessoas', 
+                descricao: 'Espaço para eventos, aulas e palestras.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'users', 
+                disponivel: true, 
+                detalhes: ['50 Cadeiras Empilháveis', '2 Mesas Professor', 'Gaveteiro', '4 Mesas Móveis', 'Lousa Branca', 'Ar condicionado'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=b1b538b3c63a508290c04ace3488b8063a01a0ff9e233a26a690a50ccfaad6c2%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd-MEH_LEU6wkpr55K3NryvogvcxlU6e9LWtC0QG6yknwQUUw/viewform?usp=dialog'
+            },
+            { 
+                id: 7, 
+                nome: 'Sala de Aula 3', 
+                tema: 'azul', 
+                capacidade: 'Até 50 pessoas', 
+                descricao: 'Espaço para eventos, aulas e palestras.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'users', 
+                disponivel: true, 
+                detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Mesa Professor', '5 Mesas Móveis', 'Gaveteiro', 'Ar condicionado'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=ad6f8235ec45689c83173c6d578099f996d7b7042181678c456394e68214dbb9%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLScsT6rw8Xg3rfWAA-LJZy81WP7TVDOIy5ouugMXj0wnTyMZxw/viewform?usp=dialog'
+            },
+            { 
+                id: 8, 
+                nome: 'Sala de Aula 4', 
+                tema: 'azul', 
+                capacidade: 'Até 45 pessoas', 
+                descricao: 'Espaço para eventos, aulas e palestras.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'users', 
+                disponivel: true, 
+                detalhes: ['45 Cadeiras c/ braço', 'Gaveteiro', 'Mesa Professor', 'Lousa Branca', 'Ar condicionado', '2 cadeiras empilháveis'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=9ee08951693683ddc1805aef0a8ca67bf74fa69d900cff4f618c7e3be143c365%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSffa7jXJYBqVXto6o_yo4E7-lJUwvPl1Wjt74PCdb5LPXv7TA/viewform?usp=header'
+            },
+            { 
+                id: 9, 
+                nome: 'Sala de Estudos', 
+                tema: 'azul', 
+                capacidade: 'Até 11 pessoas', 
+                descricao: 'Espaço para aulas, estudo e reuniões.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'book-open', 
+                disponivel: true, 
+                detalhes: ['11 cadeiras', 'TV', 'Armário baixo', 'Ar condicionado'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=758d6338a5c7c135a931940b0e5c408a8a8a338cc6adb4e5b5ca607a6dde933b%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeNlT15MWxlgpSNhlJ0zVRNAC1EHOAci_RMrXmB4e25eyouuQ/viewform?usp=dialog'
+            },
+            { 
+                id: 10, 
+                nome: 'Sala de Reuniões', 
+                tema: 'azul', 
+                capacidade: 'Até 10 pessoas', 
+                descricao: 'Espaço para reuniões.', 
+                local: 'Espaço Multi', 
+                plusCode: '8FP4+33 Carianos, Florianópolis - SC',
+                icone: 'users', 
+                disponivel: true, 
+                detalhes: ['Mesa Reunião', 'TV', 'Ar condicionado', '10 cadeiras empilháveis'], 
+                agendaUrl: 'https://calendar.google.com/calendar/embed?src=828b86684687a30e86bb0a6c52a3e50767084e8a672b331c42aa7a21f1ff4557%40group.calendar.google.com&ctz=America%2FSao_Paulo',
+                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdU93xb5_0hs7d8y9dXYI4WGG6tIU0BRAuZIVnotkg_1Noe0g/viewform?usp=dialog'
+            },
             { id: 3, nome: 'Consultório Simulado 1', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9770f593917d9cfe40c7d25f861c9063017cdc8bf759b15006def8792797e5c0%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
             { id: 4, nome: 'Consultório Simulado 2', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9e6f3e73e932704b0f0b0d9a1d421e363055af4bcc387317201b22ad65712887%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
             { id: 13, nome: 'Sala de Gravação', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a gravações e produções audiovisuais.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'monitor', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: null },
@@ -201,7 +320,7 @@
                                 <div class="w-full text-center py-4 bg-slate-100 rounded-2xl text-slate-400 text-xs font-black uppercase tracking-widest border border-dashed border-slate-300">Uso Livre</div>
                             </template>
                             <template x-if="!space.reservaNaoNecessaria && !space.statusManutencao">
-                                <button @click="selectedSpace = space; showInstructions = false" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600' : 'bg-slate-900 hover:bg-blue-600'">
+                                <button @click="selectedSpace = space; showInstructions = false" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600 shadow-green-100' : 'bg-slate-900 hover:bg-blue-600 shadow-slate-200'">
                                     <span class="w-4.5 h-4.5 block" x-html="icons['calendar']"></span> Ver Agenda Integrada
                                 </button>
                             </template>
@@ -234,43 +353,50 @@
                     </button>
                 </div>
 
-                <!-- Conteúdo -->
+                <!-- Conteúdo (Iframe ou Instruções) -->
                 <div class="flex-1 bg-slate-100 relative overflow-y-auto">
+                    <!-- Tela de Instruções -->
                     <div x-show="showInstructions" class="absolute inset-0 z-20 bg-white p-8 md:p-12 overflow-y-auto">
                         <div class="max-w-2xl mx-auto">
                             <div class="mb-8 flex items-center gap-4 text-blue-600">
                                 <span class="w-10 h-10 block" x-html="icons['info']"></span>
                                 <h4 class="text-2xl font-black">Como reservar?</h4>
                             </div>
-                            <div class="space-y-6 text-slate-700 leading-relaxed font-medium">
-                                <p>Interessados em reservar alguma das salas ou equipamentos deverão enviar e-mail para <b class="text-slate-900">espfloripa@gmail.com</b> fazendo a solicitação com as informações abaixo:</p>
-                                <ul class="space-y-2 pl-4 border-l-4 border-blue-100 font-bold text-slate-800">
-                                    <li>• Nome e descrição do evento/atividade</li>
-                                    <li>• Número estimado de pessoas</li>
-                                    <li>• Sala que quer agendar</li>
-                                    <li>• Dia</li>
-                                    <li>• Horário (início e fim)</li>
-                                    <li>• Responsável com contato (nome, lotação, email e telefone)</li>
-                                </ul>
-                                <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100 text-blue-800 text-sm">
-                                    No caso de equipamentos especificar o(s) equipamentos, data e horário de uso (início e fim).
+                            <div class="space-y-8 text-slate-700 leading-relaxed font-medium">
+                                <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div class="text-lg">
+                                        Para reservar preencha a planilha clicando no botão ao lado &gt;
+                                    </div>
+                                    <template x-if="selectedSpace && selectedSpace.formUrl">
+                                        <a :href="selectedSpace.formUrl" target="_blank" 
+                                           class="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-lg transition-all shadow-xl shadow-blue-200 active:scale-95 group">
+                                            <span class="w-5 h-5 block group-hover:translate-x-1 transition-transform" x-html="icons['external-link']"></span>
+                                            Reservar
+                                        </a>
+                                    </template>
                                 </div>
-                                <p>A ESP receberá as solicitações, procederá ao agendamento e enviará a confirmação logo que possível. Em caso de urgência ligar no telefone <b class="text-slate-900">3239-1593</b> ou procurar diretamente a ESP.</p>
-                                <div class="pt-6 border-t border-slate-100 text-xs md:text-sm text-slate-500 italic">
-                                    Para as salas localizadas no espaço da ESP no Multihospital o responsável deverá retirar a chave da sala (e os equipamentos se necessários) na sala da ESP na SMS.
+
+                                <div class="space-y-4">
+                                    <p>A ESP receberá as solicitações, procederá ao agendamento e enviará a confirmação logo que possível. Em caso de urgência ligar no telefone <b class="text-slate-900 text-lg">3239-1593</b> ou procurar diretamente a ESP.</p>
+                                    
+                                    <div class="p-6 border-t-4 border-amber-400 bg-amber-50 rounded-2xl text-slate-600 text-sm">
+                                        Para as salas localizadas no espaço da ESP no Multihospital o responsável deverá retirar a chave da sala (e os equipamentos se necessários) na sala da ESP na SMS.
+                                    </div>
                                 </div>
                             </div>
+                            
                             <button @click="showInstructions = false" class="mt-10 flex items-center gap-2 text-blue-600 font-bold hover:underline transition-all">
                                 <span class="w-5 h-5 block" x-html="icons['chevron-left']"></span> Voltar para o calendário
                             </button>
                         </div>
                     </div>
+                    <!-- Iframe do Calendário -->
                     <template x-if="selectedSpace && selectedSpace.agendaUrl">
                         <iframe :src="selectedSpace.agendaUrl" class="w-full h-full border-none" title="Agenda"></iframe>
                     </template>
                 </div>
 
-                <!-- Rodapé -->
+                <!-- Rodapé do Modal -->
                 <div class="p-4 bg-slate-50 border-t flex flex-col md:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-3 text-slate-600 text-sm text-center md:text-left">
                         <span class="w-4.5 h-4.5 text-blue-500 shrink-0 block" x-html="icons['info']"></span>
