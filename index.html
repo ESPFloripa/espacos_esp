@@ -31,7 +31,51 @@
         filterType: 'todos',
         selectedSpace: null,
         showInstructions: false,
+        showForm: false,
         showParkingInfo: false,
+        formSrc: '',
+        formTentativa: 0,
+        formCarregou: false,
+        formFalhou: false,
+        formTimer: null,
+        init() {
+            // O formulário do Apps Script envia este sinal ao terminar de carregar.
+            // Se o sinal não chegar a tempo, recarregamos o iframe automaticamente.
+            window.addEventListener('message', (ev) => {
+                if (ev.data === 'agendamento-esp-carregado') {
+                    this.formCarregou = true;
+                    this.formFalhou = false;
+                    if (this.formTimer) { clearTimeout(this.formTimer); this.formTimer = null; }
+                }
+            });
+        },
+        abrirFormulario() {
+            this.showForm = true;
+            this.formTentativa = 0;
+            this.formFalhou = false;
+            this.carregarForm();
+        },
+        carregarForm() {
+            if (!this.selectedSpace || !this.selectedSpace.formUrl) return;
+            this.formTentativa++;
+            this.formCarregou = false;
+            this.formFalhou = false;
+            const sep = this.selectedSpace.formUrl.includes('?') ? '&' : '?';
+            this.formSrc = this.selectedSpace.formUrl + sep + 'r=' + Date.now();
+            if (this.formTimer) clearTimeout(this.formTimer);
+            this.formTimer = setTimeout(() => {
+                if (this.formCarregou) return;
+                if (this.formTentativa < 3) this.carregarForm();
+                else this.formFalhou = true;
+            }, 7000);
+        },
+        fecharFormulario() {
+            this.showForm = false;
+            this.formSrc = '';
+            this.formFalhou = false;
+            this.formCarregou = false;
+            if (this.formTimer) { clearTimeout(this.formTimer); this.formTimer = null; }
+        },
         icons: {
             'users': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/></svg>`,
             'book-open': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>`,
@@ -61,7 +105,7 @@
                 disponivel: true, 
                 detalhes: ['10 Cadeiras', '2 Mesas', 'TV', 'Datashow', 'Parede transformada em lousa', 'Ar condicionado'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=5f44da77118fa59b495b7ad4dcfe5b9de1ed06c21c24a051480b246f1852c431%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeBqQCWYE_jBm0jJFIoyL4xM2QfsPhQoguYo3xV_G5DBdwp-g/viewform?usp=header'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 12, 
@@ -73,9 +117,9 @@
                 plusCode: 'CF6J+6Q Trindade, Florianópolis - SC',
                 icone: 'monitor', 
                 disponivel: true, 
-                detalhes: ['3 Datashows', '2 Notebooks'], 
+                detalhes: ['Datashows', 'Notebooks', 'Caixas de Som'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=2e2394ffe791fd9ec5c366c1eba0d649b7eebcc67a0c89836d32238aa454f441%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd6yq5Kty2IFdu0Hd-QSNcRYGUp6qAiRlrjaTZFVfbfvzrnnQ/viewform?usp=header'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 1, 
@@ -89,7 +133,7 @@
                 disponivel: true, 
                 detalhes: ['230 Cadeiras Empilháveis', '2 Bancadas', 'Sala de Apoio', 'Ar condicionado'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=949fb0e4881e9b2838d765bb059e8be9ef0739681b58916cdab53131978ab88d%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfqM02DkDVa3KmPwNwbEZ2i7Mhc2_SCw8Db8lMC9y5sxlUE4w/viewform?usp=dialog'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 5, 
@@ -103,7 +147,7 @@
                 disponivel: true, 
                 detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Gaveteiro', 'Mesas Professor', 'Ar condicionado'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=10cbbf56f4710a2d4ff11d0a75810a42bee54d548c1262dc04c5c7cc5fa7bc4e%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdTUyO2JbiHtObTtkMs7ZKkwUGnJiB0tnDRclbv6bVGEzGoRg/viewform?usp=dialog'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 6, 
@@ -117,7 +161,7 @@
                 disponivel: true, 
                 detalhes: ['50 Cadeiras Empilháveis', '2 Mesas Professor', 'Gaveteiro', '4 Mesas Móveis', 'Lousa Branca', 'Ar condicionado'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=b1b538b3c63a508290c04ace3488b8063a01a0ff9e233a26a690a50ccfaad6c2%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd-MEH_LEU6wkpr55K3NryvogvcxlU6e9LWtC0QG6yknwQUUw/viewform?usp=dialog'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 7, 
@@ -131,7 +175,7 @@
                 disponivel: true, 
                 detalhes: ['50 Cadeiras Empilháveis', 'Lousa Branca', 'Mesa Professor', '5 Mesas Móveis', 'Gaveteiro', 'Ar condicionado'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=ad6f8235ec45689c83173c6d578099f996d7b7042181678c456394e68214dbb9%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLScsT6rw8Xg3rfWAA-LJZy81WP7TVDOIy5ouugMXj0wnTyMZxw/viewform?usp=dialog'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 8, 
@@ -145,7 +189,7 @@
                 disponivel: true, 
                 detalhes: ['45 Cadeiras c/ braço', 'Gaveteiro', 'Mesa Professor', 'Lousa Branca', 'Ar condicionado', '2 cadeiras empilháveis'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=9ee08951693683ddc1805aef0a8ca67bf74fa69d900cff4f618c7e3be143c365%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSffa7jXJYBqVXto6o_yo4E7-lJUwvPl1Wjt74PCdb5LPXv7TA/viewform?usp=header'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 9, 
@@ -159,7 +203,7 @@
                 disponivel: true, 
                 detalhes: ['11 cadeiras', 'TV', 'Armário baixo', 'Ar condicionado'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=758d6338a5c7c135a931940b0e5c408a8a8a338cc6adb4e5b5ca607a6dde933b%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeNlT15MWxlgpSNhlJ0zVRNAC1EHOAci_RMrXmB4e25eyouuQ/viewform?usp=dialog'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { 
                 id: 10, 
@@ -173,7 +217,7 @@
                 disponivel: true, 
                 detalhes: ['Mesa Reunião', 'TV', 'Ar condicionado', '10 cadeiras empilháveis'], 
                 agendaUrl: 'https://calendar.google.com/calendar/embed?src=828b86684687a30e86bb0a6c52a3e50767084e8a672b331c42aa7a21f1ff4557%40group.calendar.google.com&ctz=America%2FSao_Paulo',
-                formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdU93xb5_0hs7d8y9dXYI4WGG6tIU0BRAuZIVnotkg_1Noe0g/viewform?usp=dialog'
+                formUrl: 'https://script.google.com/macros/s/AKfycbziPq75P2VRabvh42VZAqlz84GC6KgUwjjY0N7Oimg81W8PnsbvuktV6gGbY9MbU0X_5A/exec'
             },
             { id: 3, nome: 'Consultório Simulado 1', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9770f593917d9cfe40c7d25f861c9063017cdc8bf759b15006def8792797e5c0%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
             { id: 4, nome: 'Consultório Simulado 2', tema: 'azul', capacidade: '—', descricao: 'Ambiente destinado a simulações clínicas supervisionadas.', local: 'Espaço Multi', plusCode: '8FP4+33 Carianos, Florianópolis - SC', icone: 'stethoscope', disponivel: true, statusManutencao: true, detalhes: ['Ar condicionado'], agendaUrl: 'https://calendar.google.com/calendar/embed?src=9e6f3e73e932704b0f0b0d9a1d421e363055af4bcc387317201b22ad65712887%40group.calendar.google.com&ctz=America%2FSao_Paulo' },
@@ -320,7 +364,7 @@
                                 <div class="w-full text-center py-4 bg-slate-100 rounded-2xl text-slate-400 text-xs font-black uppercase tracking-widest border border-dashed border-slate-300">Uso Livre</div>
                             </template>
                             <template x-if="!space.reservaNaoNecessaria && !space.statusManutencao">
-                                <button @click="selectedSpace = space; showInstructions = false" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600 shadow-green-100' : 'bg-slate-900 hover:bg-blue-600 shadow-slate-200'">
+                                <button @click="selectedSpace = space; showInstructions = false; fecharFormulario()" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600 shadow-green-100' : 'bg-slate-900 hover:bg-blue-600 shadow-slate-200'">
                                     <span class="w-4.5 h-4.5 block" x-html="icons['calendar']"></span> Ver Agenda Integrada
                                 </button>
                             </template>
@@ -345,16 +389,48 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-lg leading-tight" x-text="selectedSpace?.nome"></h3>
-                            <p class="text-white/80 text-xs uppercase tracking-wider font-semibold" x-text="showInstructions ? 'Instruções de Agendamento' : 'Calendário Oficial em Tempo Real'"></p>
+                            <p class="text-white/80 text-xs uppercase tracking-wider font-semibold" x-text="showForm ? 'Formulário de Reserva' : (showInstructions ? 'Instruções de Agendamento' : 'Calendário Oficial em Tempo Real')"></p>
                         </div>
                     </div>
-                    <button @click="selectedSpace = null" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                    <button @click="selectedSpace = null; fecharFormulario()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
                         <span class="w-6 h-6 block" x-html="icons['x']"></span>
                     </button>
                 </div>
 
                 <!-- Conteúdo (Iframe ou Instruções) -->
                 <div class="flex-1 bg-slate-100 relative overflow-y-auto">
+                    <!-- Tela do Formulário de Reserva (iframe) -->
+                    <template x-if="showForm && selectedSpace && selectedSpace.formUrl">
+                        <div class="absolute inset-0 z-30 bg-white flex flex-col">
+                            <div class="p-3 border-b bg-slate-50 flex items-center justify-between shrink-0">
+                                <button @click="fecharFormulario()" class="flex items-center gap-2 text-blue-600 font-bold text-sm hover:underline">
+                                    <span class="w-4 h-4 block" x-html="icons['chevron-left']"></span> Voltar às instruções
+                                </button>
+                                <a :href="selectedSpace.formUrl" target="_blank" class="flex items-center gap-2 text-slate-500 font-semibold text-xs hover:text-blue-600 transition-colors">
+                                    <span class="w-3.5 h-3.5 block" x-html="icons['external-link']"></span> Abrir em nova aba
+                                </a>
+                            </div>
+                            <div class="relative flex-1">
+                                <iframe :src="formSrc" class="absolute inset-0 w-full h-full border-none" title="Formulário de Reserva" allow="clipboard-write"></iframe>
+
+                                <!-- Overlay: carregando (aguardando sinal do formulário) -->
+                                <div x-show="!formCarregou && !formFalhou" class="absolute inset-0 bg-white flex flex-col items-center justify-center gap-4 z-10">
+                                    <div class="w-10 h-10 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+                                    <p class="text-slate-500 font-semibold text-sm">Carregando formulário...</p>
+                                    <p class="text-slate-400 text-xs" x-show="formTentativa > 1" x-text="'Tentativa ' + formTentativa + ' de 3'"></p>
+                                </div>
+
+                                <!-- Overlay: falha após as tentativas -->
+                                <div x-show="formFalhou" class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center gap-5 z-10 p-6 text-center">
+                                    <p class="text-slate-600 font-medium text-sm max-w-sm leading-relaxed">O formulário demorou para responder. Você pode tentar novamente ou abri-lo em uma nova aba.</p>
+                                    <div class="flex gap-3 flex-wrap justify-center">
+                                        <button @click="formTentativa = 0; carregarForm()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm transition-colors shadow-md">Tentar novamente</button>
+                                        <a :href="selectedSpace.formUrl" target="_blank" class="px-6 py-3 bg-green-700 hover:bg-green-600 text-white rounded-xl font-bold text-sm transition-colors shadow-md">Abrir em nova aba</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                     <!-- Tela de Instruções -->
                     <div x-show="showInstructions" class="absolute inset-0 z-20 bg-white p-8 md:p-12 overflow-y-auto">
                         <div class="max-w-2xl mx-auto">
@@ -368,11 +444,11 @@
                                         Para reservar preencha a planilha clicando no botão ao lado &gt;
                                     </div>
                                     <template x-if="selectedSpace && selectedSpace.formUrl">
-                                        <a :href="selectedSpace.formUrl" target="_blank" 
+                                        <button @click="abrirFormulario()" 
                                            class="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-lg transition-all shadow-xl shadow-blue-200 active:scale-95 group">
                                             <span class="w-5 h-5 block group-hover:translate-x-1 transition-transform" x-html="icons['external-link']"></span>
                                             Reservar
-                                        </a>
+                                        </button>
                                     </template>
                                 </div>
 
@@ -406,7 +482,7 @@
                         <button @click="showInstructions = true" class="flex-1 md:flex-none flex items-center justify-center gap-2 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md active:scale-95" :class="selectedSpace?.tema === 'verde' ? 'bg-green-700 hover:bg-green-600' : 'bg-blue-600 hover:bg-blue-700'">
                             <span class="w-4 h-4 block" x-html="icons['info']"></span> Reservar
                         </button>
-                        <button @click="selectedSpace = null" class="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Fechar</button>
+                        <button @click="selectedSpace = null; fecharFormulario()" class="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Fechar</button>
                     </div>
                 </div>
             </div>
@@ -456,7 +532,7 @@
                     </span>
                     <span class="flex items-center gap-2">
                         <span class="w-4 h-4 block" x-html="icons['clock']"></span>
-                        <span>Segunda a Sexta: 08:00 - 18:00</span>
+                        <span>Atendimento Segunda a Sexta: 08:00 - 18:00 (os espaços estão disponíveis além deste horário)</span>
                     </span>
                 </div>
             </div>
